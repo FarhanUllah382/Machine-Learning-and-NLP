@@ -5,25 +5,36 @@ import pandas as pd
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
+import os
 
+# ----------------------------
+# FastAPI App
+# ----------------------------
 app = FastAPI(title="Amazon Home Semantic Search 🚀")
 
-DATA_PATH = "artifacts/amazon_home.csv"
-INDEX_PATH = "artifacts/amazon_home_index.faiss"
+# ----------------------------
+# Load Data & Model
+# ----------------------------
+DATA_PATH = os.path.join("artifacts", "amazon_home.csv")
+INDEX_PATH = os.path.join("artifacts", "amazon_home_index.faiss")
 
 amazon_home = pd.read_csv(DATA_PATH)
 
+# Load FAISS index
 index = faiss.read_index(INDEX_PATH)
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
 
+# Option 2: Use pre-downloaded local folder (safer)
+model = SentenceTransformer("./all-MiniLM-L6-v2")
+
+# Pydantic Model
 class Product(BaseModel):
     title: str
     image: str | None
     category: str
     similarity: float
 
-# Search Logic
+# Semantic Search Logic
 def semantic_search(query: str, top_k: int = 5) -> List[Product]:
     query_embedding = model.encode([query])
     faiss.normalize_L2(query_embedding)
