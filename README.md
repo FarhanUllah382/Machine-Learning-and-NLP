@@ -1,133 +1,117 @@
-# 🤖 Machine Learning & NLP Projects
+# 🔍 Semantic Product Search Engine
 
 <div align="center">
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python&logoColor=white)
-![NLP](https://img.shields.io/badge/NLP-scikit--learn-orange?style=for-the-badge)
-![Similarity](https://img.shields.io/badge/Search-Cosine_Similarity-green?style=for-the-badge)
+![NLP](https://img.shields.io/badge/NLP-Cosine_Similarity-orange?style=for-the-badge)
+![APIs](https://img.shields.io/badge/Data-REST_APIs-green?style=for-the-badge)
 ![Deployment](https://img.shields.io/badge/Deployed-Heroku-purple?style=for-the-badge&logo=heroku)
-![ML](https://img.shields.io/badge/ML-Fraud_Detection-red?style=for-the-badge)
+![pandas](https://img.shields.io/badge/Data-pandas-yellow?style=for-the-badge&logo=pandas)
 
-**A collection of end-to-end Machine Learning and NLP pipelines — from raw data to deployed applications.**
+**Search smarter, not harder. Find products by meaning — not just keywords.**
 
-[Projects](#-projects) • [Architecture](#-architecture) • [Installation](#-installation) • [Usage](#-usage) • [Tech Stack](#-tech-stack)
+[Overview](#-overview) • [Architecture](#-architecture) • [How It Works](#-how-it-works) • [Installation](#-installation) • [Usage](#-usage) • [Tech Stack](#-tech-stack)
 
 </div>
 
 ---
 
-## 📦 Projects
+## 🎯 Overview
 
-This repository contains two production-grade ML/NLP systems:
+A production-grade **semantic search engine for e-commerce products** — built as a complete ETL pipeline that ingests large-scale product data via REST APIs, applies NLP-based similarity transformation, and returns the most contextually relevant results for any natural language query.
 
-| # | Project | Tech | Description |
-|---|---------|------|-------------|
-| 1 | 🔍 **Semantic Product Search Engine** | Python, cosine similarity, REST APIs | AI-powered product search using semantic similarity |
-| 2 | 🚨 **Fraud Detection Text Classifier** | scikit-learn, NLP, pandas | SMS/text fraud detection using probabilistic NLP |
+> **The difference:** Keyword search finds products that *contain* your words.
+> Semantic search finds products that *match your intent* — even when the words don't match exactly.
 
----
-
-## 🔍 Project 1 — Semantic Product Search Engine
-
-### What It Does
-A multi-stage **ETL + semantic search pipeline** that ingests large-scale e-commerce product data via API, applies similarity-based transformation, and returns the most relevant products for any natural language query — going far beyond simple keyword matching.
-
-### The Problem It Solves
-Traditional keyword search returns results that *contain* the search term. Semantic search understands *meaning* — searching "comfortable running shoes" returns relevant athletic footwear even if the exact words don't match.
-
-### Architecture
-```
-┌──────────────────────────────────────────────────────────┐
-│                    INGESTION PIPELINE                     │
-│                                                          │
-│  E-Commerce API                                          │
-│       │                                                  │
-│       ▼                                                  │
-│  API Extraction ──► Data Cleaning ──► Text Vectorization │
-│  (GET requests)    (pandas)           (TF-IDF / Cosine)  │
-│                                              │           │
-│                                              ▼           │
-│                                       Queryable Index    │
-└──────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────┐
-│                     QUERY PIPELINE                        │
-│                                                          │
-│  User Query ──► Vectorize ──► Cosine Similarity Search   │
-│                                       │                  │
-│                                       ▼                  │
-│                               Top-K Results ✅            │
-│                         (filtered by relevance score)    │
-└──────────────────────────────────────────────────────────┘
-```
-
-### Key Features
-- 🌐 **API-driven ingestion** — Extracts product data via parameterised REST API calls with JSON parsing and error handling for rate-limited responses
-- 🧹 **Data quality governance** — Top-K filtering removes low-relevance records, ensuring downstream data quality
-- 🔍 **Semantic similarity** — Cosine similarity matching returns contextually relevant results, not just keyword matches
-- 📊 **Scalable pipeline** — Designed to handle large product catalogues efficiently
-- 🚀 **Deployed on Heroku** — Live, accessible web application
-
-### Live Demo
-> Check `Semantic Product Search Demo` file in repo for demo walkthrough
+**Deployed live on Heroku** — not just a local demo.
 
 ---
 
-## 🚨 Project 2 — Fraud Detection Text Classifier
+## ✨ Features
 
-### What It Does
-An end-to-end **NLP classification pipeline** that ingests raw SMS/text message data, applies probabilistic NLP transformations, and classifies messages as fraudulent or legitimate — with a real-time GUI for live inference.
+- 🌐 **API-driven data ingestion** — Extracts product data via parameterised REST API calls with full JSON parsing and rate-limit error handling
+- 🧹 **Data quality governance** — Top-K filtering removes low-relevance records during the loading stage, improving downstream search accuracy
+- 🔍 **Semantic similarity search** — Cosine similarity matching surfaces contextually relevant products beyond simple keyword matching
+- 📊 **Scalable ETL pipeline** — Multi-stage: Extract → Transform (similarity scoring) → Load (queryable index)
+- 🚀 **Deployed on Heroku** — Live, publicly accessible web application
+- ⚡ **Fast query handling** — Optimised for low-latency search responses
 
-### The Problem It Solves
-SMS fraud and phishing attacks cost billions globally. This classifier provides an automated, scalable solution to detect and flag suspicious messages before they reach end users.
+---
 
-### Architecture
+## 🏗️ Architecture
+
 ```
-┌──────────────────────────────────────────────────────────┐
-│                   TRAINING PIPELINE                       │
-│                                                          │
-│  Raw Messages                                            │
-│       │                                                  │
-│       ▼                                                  │
-│  Text Cleaning ──► Feature Extraction ──► Model Training │
-│  (normalise,       (TF-IDF / Bag        (Naive Bayes /   │
-│   remove noise)     of Words)            scikit-learn)   │
-│                                              │           │
-│                                              ▼           │
-│                                    Saved Model Artifact  │
-│                                    (artifacts/)          │
-└──────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                     INGESTION PIPELINE                        │
+│                                                              │
+│  E-Commerce API                                              │
+│       │                                                      │
+│       ▼                                                      │
+│  API Extraction ──► Data Cleaning ──► Text Vectorization     │
+│  (GET requests,     (pandas:           (TF-IDF /             │
+│   JSON parsing,      normalise,         Cosine Similarity     │
+│   error handling)    deduplicate)       scoring)             │
+│                                              │               │
+│                                              ▼               │
+│                                    Top-K Filtered Index      │
+│                                    (low-relevance removed)   │
+└──────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────┐
-│                   INFERENCE PIPELINE                      │
-│                                                          │
-│  Live Input ──► Preprocess ──► Model Predict ──► Result  │
-│  (GUI)          (same as         (load from      (FRAUD  │
-│                  training)        artifact)    / LEGIT)  │
-└──────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                      QUERY PIPELINE                           │
+│                                                              │
+│  User Query                                                  │
+│       │                                                      │
+│       ▼                                                      │
+│  Vectorize Query ──► Cosine Similarity ──► Ranked Results    │
+│                       Search                  │             │
+│                      (vs product index)       ▼             │
+│                                        Top-K Products ✅     │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-### Key Features
-- 🧠 **Probabilistic NLP** — Uses statistical text features for robust classification
-- 💾 **Model persistence** — Trained model saved as artifact for instant reloading (no retraining)
-- 📊 **Structured output schema** — Classification results stored in queryable format for monitoring and reporting
-- 🖥️ **Real-time GUI** — Live text input, instant prediction, pipeline health visibility
-- 📈 **Performance monitoring** — Error analysis and classification metrics built in
+---
+
+## ⚙️ How It Works
+
+### Step 1 — Data Extraction
+Product data is pulled from an e-commerce API using parameterised `GET` requests. The pipeline handles:
+- JSON response parsing
+- Error handling for failed or rate-limited calls
+- Paginated data retrieval for large catalogues
+
+### Step 2 — Transformation & Quality Filtering
+```python
+# Apply similarity-based transformation
+# Filter out low-relevance records using Top-K threshold
+# Result: clean, high-quality product dataset
+```
+This mirrors **schema-level data governance** — only products meeting a relevance threshold pass through to the index.
+
+### Step 3 — Vectorization
+Each product description is converted into a **numerical vector representation** using TF-IDF (Term Frequency-Inverse Document Frequency). This captures the *semantic importance* of words across the entire catalogue.
+
+### Step 4 — Semantic Search
+```python
+# User types: "lightweight laptop for travel"
+# Pipeline vectorizes the query
+# Computes cosine similarity against all product vectors
+# Returns Top-K most similar products ranked by relevance score
+```
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Component | Technology | Used For |
+| Component | Technology | Purpose |
 |---|---|---|
 | **Language** | Python 3.10+ | Core development |
-| **ML Framework** | scikit-learn | Model training & evaluation |
-| **Data Processing** | pandas, numpy | Data cleaning & transformation |
-| **NLP** | TF-IDF, Bag of Words, cosine similarity | Text feature extraction |
-| **API Integration** | requests, JSON parsing | Data ingestion |
-| **Model Persistence** | pickle (artifacts/) | Save/load trained models |
-| **Deployment** | Heroku (Procfile) | Live web deployment |
-| **Runtime** | Python 3.10 (runtime.txt) | Heroku runtime config |
+| **Data Processing** | pandas | Cleaning, transformation, filtering |
+| **NLP / Search** | cosine similarity, TF-IDF | Semantic matching |
+| **API Integration** | requests, JSON | Product data ingestion |
+| **Web Framework** | Flask / Streamlit | Application interface |
+| **Deployment** | Heroku | Live production deployment |
+| **Config** | Procfile, runtime.txt | Heroku deployment setup |
 
 ---
 
@@ -144,7 +128,7 @@ cd Machine-Learning-and-NLP
 pip install -r requirements.txt
 ```
 
-### 3. Run the application
+### 3. Run locally
 ```bash
 python app/app.py
 ```
@@ -153,19 +137,18 @@ python app/app.py
 
 ## 💻 Usage
 
-### Semantic Search
 ```python
-# Enter a natural language product query
-query = "comfortable running shoes for marathon"
-# Returns top-K most semantically similar products
+# Enter a natural language product search query
+query = "comfortable running shoes for marathon training"
+
+# The engine returns the most semantically relevant products
+# — even if exact words don't appear in product descriptions
 ```
 
-### Fraud Detection
-```python
-# Enter any SMS/text message in the GUI
-message = "Congratulations! You've won a free iPhone. Click here to claim."
-# Returns: FRAUD ⚠️ or LEGITIMATE ✅
-```
+**Example queries that work well:**
+- `"budget smartphone with good camera"`
+- `"warm jacket for cold weather hiking"`
+- `"ergonomic office chair for back pain"`
 
 ---
 
@@ -175,16 +158,15 @@ message = "Congratulations! You've won a free iPhone. Click here to claim."
 Machine-Learning-and-NLP/
 │
 ├── app/
-│   └── app.py                    # Main application & GUI
+│   └── app.py                      # Main application, search logic & UI
 │
-├── artifacts/                    # Saved trained model files
-│   └── *.pkl                     # Pickled model artifacts
+├── artifacts/                      # Saved model/index artifacts
 │
-├── Semantic Product Search Demo  # Demo walkthrough file
+├── Semantic Product Search Demo    # Demo walkthrough
 │
-├── Procfile                      # Heroku deployment config
-├── runtime.txt                   # Python runtime version
-└── requirements.txt              # Project dependencies
+├── Procfile                        # Heroku process config
+├── runtime.txt                     # Python runtime version (Heroku)
+└── requirements.txt                # Project dependencies
 ```
 
 ---
@@ -193,22 +175,22 @@ Machine-Learning-and-NLP/
 
 | Decision | Reasoning |
 |---|---|
-| **Model artifacts saved to disk** | Avoids expensive retraining on every run |
-| **Top-K filtering in search** | Improves result quality — data governance at query level |
-| **Modular pipeline design** | Training and inference pipelines are independent and reusable |
-| **Heroku deployment** | Makes project publicly accessible — not just local demos |
-| **Structured output schema** | Enables downstream monitoring, reporting, and querying of results |
+| **Top-K filtering during load** | Removes low-relevance records early — better data quality downstream |
+| **Cosine similarity over keyword search** | Captures semantic meaning, handles synonyms and paraphrasing |
+| **API-driven ingestion** | Scalable, real-world data source — not just a static CSV |
+| **Heroku deployment** | Publicly accessible — demonstrates end-to-end deployment skills |
+| **Modular ETL design** | Each stage (extract, transform, load) is independently testable |
 
 ---
 
 ## 🔮 Future Improvements
 
-- [ ] Add BERT/transformer-based embeddings for improved semantic search accuracy
-- [ ] Expand fraud detection to email and social media text
-- [ ] Add explainability — highlight which words triggered fraud classification
-- [ ] REST API wrapper for both models
+- [ ] Upgrade to BERT/sentence-transformer embeddings for deeper semantic understanding
+- [ ] Add product category filtering alongside semantic search
+- [ ] Implement user query history and personalised ranking
+- [ ] REST API endpoint for programmatic search access
 - [ ] Docker containerization for portable deployment
-- [ ] A/B testing framework for model comparison
+- [ ] Performance benchmarking: keyword vs semantic search accuracy
 
 ---
 
